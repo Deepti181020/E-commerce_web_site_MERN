@@ -1,0 +1,10 @@
+.newsletter{
+    background: linear-gradient(180deg,#d3c6d4 0%,#8dbef522 60%)
+}
+.newsletter div{
+    border:1px solid #e3e3e3
+}
+.newsletter input{
+    font-family: Poppins;
+    
+}

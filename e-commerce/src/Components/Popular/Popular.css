@@ -1,0 +1,29 @@
+/* Base styles for the popular section */
+.popular {
+    text-align: center;
+}
+
+/* Horizontal rule styling */
+.popular hr {
+    border: none;
+    height: 6px;
+    background: #252525;
+    border-radius: 10px;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    .popular h1 {
+        font-size: 2rem; /* Adjust font size for smaller screens */
+    }
+
+    .popular-item {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+    }
+}
+
+@media (min-width: 1024px) {
+    .popular h1 {
+        font-size: 3rem; /* Adjust font size for larger screens */
+    }
+}

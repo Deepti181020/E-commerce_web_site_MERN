@@ -1,0 +1,22 @@
+/* Sidebar.css */
+
+@media (max-width: 800px) {
+    .sidebar {
+      display: flex;
+      flex-direction: row; /* Align items side by side */
+      width: 100%; /* Full width on small screens */
+      max-width: none; /* Remove max-width limitation */
+      height: auto; /* Adjust height to fit content */
+      justify-content: center; /* Center items horizontally */
+      align-items: center; /* Center items vertically */
+      gap: 20px; /* Space between items */
+      padding: 10px 0; /* Adjust padding to look more like a navbar */
+    }
+  
+    .sidebar-item {
+      flex: 1; /* Distribute space evenly among items */
+      margin: 0; /* Remove any external margins */
+      text-align: center; /* Center align text within each item */
+    }
+  }
+  
