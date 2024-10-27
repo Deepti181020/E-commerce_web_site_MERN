@@ -7,7 +7,7 @@ const Popular = () => {
   const[popular_Women,setPopular_Women] = useState({});
 
   useEffect(()=>{
-    fetch('http://localhost:4000/popular-women')
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/popular-women`)
     .then(response=>response.json())
     .then((data)=>setPopular_Women(data));
   },[]);
