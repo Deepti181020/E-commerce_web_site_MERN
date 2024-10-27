@@ -4,9 +4,11 @@
 
 @layer base {
   body {
-    @apply font-poppins; /* Apply the Poppins font globally */
-    margin: 0;
-    background-color: #f6f6f6;
-    height: 100vh;
+    @apply font-poppins;
+   
   }
 }
+/* *{
+  margin: 0;
+
+} */

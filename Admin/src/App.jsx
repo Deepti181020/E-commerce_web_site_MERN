@@ -4,9 +4,10 @@ import Admin from './Pages/Admin/Admin'
 
 const App = () => {
   return (
-    <div>
+    <div className='flex flex-col'>
       <Navbar/>
       <Admin/>
+      
     </div>
   )
 }
