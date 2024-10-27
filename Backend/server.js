@@ -1,4 +1,4 @@
-const port = process.env.port || 4000;
+const port = process.env.PORT || 4000;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -247,7 +247,7 @@ app.post('/signup', [
             }
         }
 
-        const token = jwt.sign(data, process.env.JWT_SECRET || 'secret_ecom',{ expiresIn: '1h' });
+        const token = jwt.sign(data, process.env.JWT_SECRET || 'secret_ecom');
         console.log("Generated token payload:", data); 
         res.json({
             success: true,
