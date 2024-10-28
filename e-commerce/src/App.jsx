@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Navbar from "./Components/Navbar/Navbar";
-import Home from './Pages/Home'
 import Cart from "./Pages/Cart";
 import LoginSignup from "./Pages/LoginSignup";
 import Product from "./Pages/Product";
@@ -10,6 +9,7 @@ import men_banner from "./Components/Asset/banner_mens.png"
 import women_banner from "./Components/Asset/banner_women.png"
 import kids_banner from "./Components/Asset/banner_kids.png"
 import Address from "./Components/Address/Address";
+import HomePage from "./Pages/HomePage";
 
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
       <BrowserRouter>
         <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/men" element={<ShopCategory banner={men_banner} category="Men" />} />
             <Route path="/women" element={<ShopCategory banner={women_banner} category="Women" />} />
             <Route path="/kids" element={<ShopCategory banner={kids_banner} category="Kids" />} />
