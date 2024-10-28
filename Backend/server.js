@@ -11,7 +11,11 @@ const { body, validationResult } = require('express-validator');
 
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin:"https://shopaholic-frontend.onrender.com/",
+    methods:["GET","POST"],
+    credentials:true
+}));
 
 // Correctly calling mongoose.connect()
 mongoose.connect("mongodb+srv://deeptilata18:Deeptilata18%40%23@cluster0.oqmbz.mongodb.net/e-commerce")
