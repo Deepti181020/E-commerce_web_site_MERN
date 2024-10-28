@@ -32,7 +32,7 @@ const AddProduct = () => {
       let formData = new FormData();
       formData.append('product', image);
   
-      const response = await fetch('http://localhost:4000/upload', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/upload`, {
         method: "POST",
         headers: {
           Accept: 'application/json',
@@ -50,7 +50,7 @@ const AddProduct = () => {
         product.image = responseData.image_url;
         console.log(product);
         //Now store the product data into the MongoDB
-        const AddProductRes= await fetch('http://localhost:4000/addproduct',{
+        const AddProductRes= await fetch(`${import.meta.env.VITE_BACKEND_URL}/addproduct`,{
           method:'POST',
           headers:{
             Accept:'application/json',
