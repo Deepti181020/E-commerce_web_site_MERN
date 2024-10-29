@@ -1,23 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import data_product from '../Asset/data';
 import Item from '../Items/Item';
 
 const Popular = () => {
+  const [popular_Women, setPopular_Women] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const[popular_Women,setPopular_Women] = useState({});
+  useEffect(() => {
+    fetch("http://localhost:4000/popular-women")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setPopular_Women(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
 
-  useEffect(()=>{
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/popular-women`)
-    .then(response=>response.json())
-    .then((data)=>setPopular_Women(data));
-  },[]);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error fetching popular women products.</div>;
 
   return (
     <div className='popular flex flex-col items-center gap-4 p-4 md:p-8 lg:p-12'>
       <h1 className='text-[#171717] text-2xl md:text-4xl lg:text-5xl font-semibold text-center'>POPULAR IN WOMEN</h1>
       <hr className='w-1/2 md:w-1/3 lg:w-1/4 h-1 rounded bg-[#252525]' />
       <div className="popular-item grid grid-cols-2 gap-4 mt-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-5">
-        {data_product.map((item, index) => (
+        {popular_Women.map((item, index) => (
           <Item
             key={index}
             id={item.id}

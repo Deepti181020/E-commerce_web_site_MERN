@@ -21,7 +21,7 @@ const ShopContextProvider = (props) => {
         // Fetch all products
         const fetchProducts = async () => {
           try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/allproducts`);
+            const response = await axios.get("http://localhost:4000/allproducts");
             setAll_Product(response.data); // Store the parsed data into setAll_Product
           } catch (error) {
             console.error('Error fetching products:', error);
@@ -34,7 +34,7 @@ const ShopContextProvider = (props) => {
           const token = localStorage.getItem('auth-token');
           if (token) {
             try {
-              const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/getcart`, {
+              const response = await axios.get("http://localhost:4000/getcart", {
                 headers: {
                   Accept: "application/json",
                   'auth-token': token,
@@ -62,7 +62,7 @@ const addToCart = async (itemId) => {
   const token = localStorage.getItem('auth-token');
   if (token) {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/addtocart`, 
+      const response = await axios.post("http://localhost:4000/addtocart", 
         { itemId: itemId }, // Send the itemId in the request body
         {
           headers: {
@@ -88,7 +88,7 @@ const removeFromCart = async (itemId) => {
     const token = localStorage.getItem('auth-token');
     if (token) {
       try {
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/removecart`, 
+        const response = await axios.post("http://localhodt:4000/removecart", 
           { itemId: itemId }, // Send the itemId in the request body
           {
             headers: {
