@@ -30,7 +30,7 @@ const LoginSignup = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, formData, {
+      const response = await axios.post("http://localhost:4000/login", formData, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const LoginSignup = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/signup`, formData, {
+      const response = await axios.post("http://localhost:4000/signup", formData, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",

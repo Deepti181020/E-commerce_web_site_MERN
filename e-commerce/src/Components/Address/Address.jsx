@@ -19,8 +19,9 @@ const Address = () => {
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isViewing, setIsViewing] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const excludedFields = ['userId','_id', 'date', '__v']; // Define fields to exclude
+    const excludedFields = ['userId', '_id', 'date', '__v']; // Define fields to exclude
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -45,7 +46,7 @@ const Address = () => {
         const token = localStorage.getItem('auth-token');
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/addaddress`, addressData, {
+            const response = await axios.post("http://localhost:4000/addaddress", addressData, {
                 headers: {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -75,7 +76,6 @@ const Address = () => {
             setIsSubmitting(false);
         }
     };
-
     const handleEditSubmit = async () => {
         if (!addressData.address || !addressData.city || !addressData.zipCode || !addressData.phone) {
             setError('Please fill all required fields.');
@@ -87,7 +87,7 @@ const Address = () => {
         const token = localStorage.getItem('auth-token');
 
         try {
-            const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/edit-address/${addressData._id}`, addressData, {
+            const response = await axios.put(`http://localhost:4000/edit-address/${addressData._id}`, addressData, {
                 headers: {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -95,7 +95,6 @@ const Address = () => {
                 }
             });
 
-            // Assuming the response returns the updated address or a success message
             if (response.status === 200) {
                 setAddressData({
                     address: '',
@@ -111,8 +110,6 @@ const Address = () => {
                 showSuccessMessage('Edited!');
             }
         } catch (error) {
-            console.error('Error updating the address:', error);
-            // Axios error handling
             const errorMessage = error.response?.data?.message || 'Error updating the address.';
             setError(errorMessage);
         } finally {
@@ -121,26 +118,24 @@ const Address = () => {
     };
 
     const fetchAddresses = async () => {
+        setIsLoading(true); // Start loading
         const token = localStorage.getItem('auth-token');
 
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/view-address`, {
+            const response = await axios.get("http://localhost:4000/view-address", {
                 headers: {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
             });
-
-            // Assuming the response returns the addresses in a specific structure
             setSavedAddresses(response.data.addresses);
         } catch (error) {
-            console.error('Error fetching addresses:', error);
-            // Axios error handling
             const errorMessage = error.response?.data?.message || 'Error fetching addresses.';
             setError(errorMessage);
+        } finally {
+            setIsLoading(false); // End loading
         }
     };
-
 
     useEffect(() => {
         fetchAddresses();
@@ -161,14 +156,13 @@ const Address = () => {
     const handleDelete = async (addressId) => {
         const token = localStorage.getItem('auth-token');
         try {
-            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/delete-address/${addressId}`, {
+            const response = await axios.delete(`http://localhost:4000/delete-address/${addressId}`, {
                 headers: {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
             });
 
-            // Assuming a successful delete returns a 200 status code
             if (response.status === 200) {
                 fetchAddresses(); // Refresh the list of addresses
                 showSuccessMessage('Deleted!');
@@ -176,12 +170,11 @@ const Address = () => {
                 setError('Error deleting address');
             }
         } catch (error) {
-            console.error('Error deleting address:', error);
-            // Axios error handling
             const errorMessage = error.response?.data?.message || 'Error deleting address';
             setError(errorMessage);
         }
     };
+
 
 
     return (
@@ -278,6 +271,8 @@ const Address = () => {
                     </div>
                 </div>
             )}
+              {isLoading && <p className="text-sm lg:text-base">Loading addresses...</p>}
+              {successMessage && <p className="text-green-600 text-sm lg:text-base">{successMessage}</p>}
 
             {error && <p className="text-red-600 text-sm lg:text-base mt-2"></p>}
         </div>

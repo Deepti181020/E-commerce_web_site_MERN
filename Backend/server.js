@@ -1,4 +1,4 @@
-const port = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4000;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -7,18 +7,21 @@ const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
 const bcrypt = require('bcryptjs');
+const dotenv =require("dotenv");
+dotenv.config();
 const { body, validationResult } = require('express-validator');
 
 
 app.use(express.json());
-app.use(cors({
-    origin:"https://shopaholic-frontend.onrender.com/",
-    methods:["GET","POST"],
-    credentials:true
-}));
+  app.use(cors({
+    origin:["https://shopaholic-frontend.onrender.com", "http://localhost:4000","http://localhost:5173","http://localhost:5174"], 
+    credentials: true,  
+  })
+);
+
 
 // Correctly calling mongoose.connect()
-mongoose.connect("mongodb+srv://deeptilata18:Deeptilata18%40%23@cluster0.oqmbz.mongodb.net/e-commerce")
+mongoose.connect(process.env.DATABASE)
     .then(() => console.log("MongoDB connected"))
     .catch((error) => console.log("MongoDB connection error: ", error));
 
@@ -28,14 +31,6 @@ app.get("/", (req, res) => {
     res.send("Express App is running successfull");
 
 })
-
-// Ensure the upload directory exists
-// const uploadDir = './upload/images';
-// if (!fs.existsSync(uploadDir)) {
-//     fs.mkdirSync(uploadDir, { recursive: true });
-// }
-
-
 
 //Image Storage Engine
 
@@ -59,7 +54,7 @@ app.use('/images', express.static('upload/images'))
 app.post("/upload", upload.single('product'), (req, res) => {
     res.json({
         success: 1,
-        image_url: `http://localhost:${port}/images/${req.file.filename}`
+        image_url: `http://localhost:${PORT}/images/${req.file.filename}`
     })
 })
 
@@ -189,11 +184,6 @@ const Users = mongoose.model('Users', {
         type: String,
 
     },
-    role:{
-        type:"String",
-        enum:['user','admin'],
-        default:'user',
-    },
     cartData: {
         type: Object,
 
@@ -204,7 +194,7 @@ const Users = mongoose.model('Users', {
     }
 })
 
-//Creating API and Endpoint for registering the user
+//Creating API  Endpoint for registering the user
 app.post('/signup', [
     body('username').notEmpty().withMessage('Username cannot be empty.'),
     body('email').isEmail().withMessage('Please provide a valid email address.'),
@@ -272,8 +262,6 @@ app.post('/signup', [
 })
 
 //Creating API endpoint for user login
-
-//Creating API endpoint for user login
 app.post('/login', [
     body('email').isEmail().withMessage('Please provide a valid email address.'),
     body('password').notEmpty().withMessage('Password cannot be empty.')
@@ -332,125 +320,6 @@ app.post('/login', [
     }
 });
 
-app.post('/admin/signup', [
-    body('username').notEmpty().withMessage('Username cannot be empty.'),
-    body('email').isEmail().withMessage('Please provide a valid email address.'),
-    body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long.')
-],async (req,res) => {
-    
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            success: false,
-            errors: errors.array()
-        });
-    }
-    let cart = {};
-        for (let index = 0; index < 300; index++) {
-            cart[index] = 0;
-        }
-
-    try {
-        let check = await Users.findOne({ email: req.body.email })
-        if (check) {
-            return res.status(400).json({
-                success: false,
-                errors: "Admin has already an existing account"
-            });
-
-        }
-        // Hah the password before store in to the data base
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-        const user = new Users({
-            name: req.body.username,
-            email: req.body.email,
-            password: hashedPassword,
-            cartData: cart,
-            role:'admin',
-        });
-        console.log(user);
-        await user.save();
-        console.log("Saved");
-
-        const data = {
-            user: {
-                id: user.id
-            }
-        }
-
-        const token = jwt.sign(data, process.env.JWT_SECRET || 'secret_ecom', { expiresIn: '1h' });
-        console.log("Generated token payload:", data); 
-        res.json({
-            success: true,
-            message: "Registration successful",
-            token: token,
-        });
-    } catch (error) {
-
-        console.error('Error during signup', error);
-        res.status(500).json({
-            success: false,
-            errors: 'An error occured during signing up.Please try again later'
-        })
-
-    }
-
-
-})
-
-
-app.post('/admin/login', [
-    body('email').isEmail().withMessage('Please provide a valid email address.'),
-    body('password').notEmpty().withMessage('Password cannot be empty.')
-], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            success: false,
-            errors: errors.array()
-        });
-    }
-
-    try {
-        // Check if admin user exists
-        const admin = await Users.findOne({ email: req.body.email, role: 'admin' });
-        if (!admin) {
-            return res.status(401).json({
-                success: false,
-                message: 'Admin credentials are invalid.'
-            });
-        }
-
-        // Compare provided password with hashed password
-        const passCompare = await bcrypt.compare(req.body.password, admin.password);
-        if (!passCompare) {
-            return res.status(401).json({
-                success: false,
-                message: 'Invalid credentials. Please check your email and password.'
-            });
-        }
-
-        // Generate JWT
-        const token = jwt.sign(
-            { user: { id: admin.id, role: admin.role } },
-            process.env.JWT_SECRET || 'secret_ecom',
-            { expiresIn: '1h' }
-        );
-
-        res.json({
-            success: true,
-            token,
-            message: "Admin login successful"
-        });
-    } catch (error) {
-        console.error("Error during admin login:", error);
-        res.status(500).json({
-            success: false,
-            message: "An error occurred during admin login. Please try again later."
-        });
-    }
-});
 
 
 
@@ -466,12 +335,17 @@ app.get('/newcollections', async (req, res) => {
 
 //Creating API endpoint for popular in women category
 app.get('/popular-women', async (req, res) => {
-    let products = await Product.find({ category: "Women" })
-    let popular_women = products.slice(0, 4);
-    console.log('Popular women data is fetched');
-    res.send(popular_women);
-
-})
+    try {
+      let products = await Product.find({ category: "Women" });
+      let popular_women = products.slice(0, 4);
+      console.log('Popular women data is fetched');
+      res.send(popular_women);
+    } catch (error) {
+      console.error("Error fetching popular women products:", error);
+      res.status(500).send({ success: false, message: "Failed to fetch popular women products." });
+    }
+  });
+  
 //Creating a middleware to add the cart item quantitity in to the authenticate user cart object
 
 const fetchUser = async (req, res, next) => {
@@ -569,25 +443,25 @@ const UserAddress = mongoose.model('UserAddress', {
     }
 });
 const verifyToken = async (req, res, next) => {
-    const token = req.header('Authorization')?.split(' ')[1];
+    const token = req.header('Authorization')?.split(' ')[1]; // Extract the token from the Authorization header
     if (!token) {
         return res.status(401).json({ errors: "Token not provided. Please authenticate." });
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_ecom');
-        console.log('Decoded token:', decoded); // Log the decoded token to verify its structure
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_ecom'); // Verify token with JWT_SECRET
+        console.log('Decoded token:', decoded);
 
-        // Access the ID via decoded.user.id
+        // Ensure the decoded token has a user ID
         req.user = decoded.user;
-
         if (!req.user || !req.user.id) {
             return res.status(401).json({ errors: "Invalid token structure. User ID is missing." });
         }
 
         next();
     } catch (error) {
-        res.status(401).json({ errors: "Invalid or expired token." });
+        console.error("Token verification error:", error);
+        res.status(401).json({ errors: "Token is invalid or expired. Please authenticate again." });
     }
 };
 
@@ -596,11 +470,8 @@ app.post('/addaddress', verifyToken, async (req, res) => {
     const { address, locality, city, district, state, zipCode, phone } = req.body;
 
     try {
-        // Add console logs to debug `req.user.id` before saving the address
-        console.log('User ID for address creation:', req.user.id);
-
         const newAddress = new UserAddress({
-            userId: req.user.id, // Associate address with logged-in user
+            userId: req.user.id,  // Access the authenticated user ID
             address,
             locality,
             city,
@@ -610,13 +481,14 @@ app.post('/addaddress', verifyToken, async (req, res) => {
             phone
         });
 
-        await newAddress.save(); // Save the address to the database
-        res.status(201).json({ message: 'Address added successfully', newAddress });
+        await newAddress.save();
+        res.json({ success: true, message: "Address added successfully!" });
     } catch (error) {
-        console.error('Error on saving address:', error.message);
-        res.status(500).json({ message: 'Error on saving address', error: error.message });
+        console.error("Error saving address:", error);
+        res.status(500).json({ success: false, message: "Failed to save address." });
     }
 });
+
 
 // Get addresses for the logged-in user
 app.get('/view-address', verifyToken, async (req, res) => {
@@ -679,9 +551,9 @@ app.delete('/delete-address/:id', verifyToken, async (req, res) => {
 
 
 
-app.listen(port, (error) => {
+app.listen(PORT, (error) => {
     if (!error) {
-        console.log("Server is running on  port: " + port);
+        console.log(`Server is running on  port: ${PORT}`);
 
     }
     else {
