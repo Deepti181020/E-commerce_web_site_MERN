@@ -46,7 +46,7 @@ const Address = () => {
         const token = localStorage.getItem('auth-token');
 
         try {
-            const response = await axios.post("https://localhost:4000/addaddress", addressData, {
+            const response = await axios.post("http://localhost:4000/addaddress", addressData, {
                 headers: {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -87,7 +87,7 @@ const Address = () => {
         const token = localStorage.getItem('auth-token');
 
         try {
-            const response = await axios.put(`https://localhost:4000/edit-address/${addressData._id}`, addressData, {
+            const response = await axios.put(`http://localhost:4000/edit-address/${addressData._id}`, addressData, {
                 headers: {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -122,7 +122,7 @@ const Address = () => {
         const token = localStorage.getItem('auth-token');
 
         try {
-            const response = await axios.get("https://localhost:4000/view-address", {
+            const response = await axios.get("http://localhost:4000/view-address", {
                 headers: {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -156,7 +156,7 @@ const Address = () => {
     const handleDelete = async (addressId) => {
         const token = localStorage.getItem('auth-token');
         try {
-            const response = await axios.delete(`https://localhost:4000/delete-address/${addressId}`, {
+            const response = await axios.delete(`http://localhost:4000/delete-address/${addressId}`, {
                 headers: {
                     Accept: 'application/json',
                     'Authorization': `Bearer ${token}`,
