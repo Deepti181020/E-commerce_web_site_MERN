@@ -7,7 +7,7 @@ const Popular = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:4000/popular-women")
+    fetch("https://localhost:4000/popular-women")
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');

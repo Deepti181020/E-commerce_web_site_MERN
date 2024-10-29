@@ -14,7 +14,7 @@ const { body, validationResult } = require('express-validator');
 
 app.use(express.json());
   app.use(cors({
-    origin:["https://shopaholic-frontend.onrender.com", "http://localhost:4000","http://localhost:5173","http://localhost:5174"], 
+    origin:["https://shopaholic-frontend.onrender.com", "https://localhost:4000","https://localhost:5173","https://localhost:5174"], 
     credentials: true,  
   })
 );
